@@ -1,1 +1,20 @@
-
+git clone git://github.com/ansible/ansible.git --recursive
+cd ansible
+git checkout stable-2.9
+git pull
+cd docs/docsite/rst
+# create rst file list
+find . -iname '*.rst' > list.txt;filename=list.txt
+while read -r file; do echo ${file%/*} ; mkdir -p /root/ansible_pdfs/${file%/*};cp $file /root/ansible_pdfs/$file; done < "$filename"
+# move all rst files
+cd /root/ansible_pdfs/
+# find . -iname '*.rst' > list.txt;filename=rst.txt
+apt install pandoc
+apt install texlive-xetex
+apt install texlive-latex-extra
+# convert rst to rst.pdf
+# while read -r file; do pandoc -f rst $file -t latex -o "$file.pdf"; done < "$filename"
+filename=rst.txt;while read -r file; echo $file; do pandoc  $file -t latex -o "$file.pdf" --latex-engine=xelatex ; done < "$filename"
+# remove rst from filename
+while read -r file; do oldf=`echo $file`;newf=`echo "${file//.rst/.pdf}"`;echo $newf; mv $oldf $newf; done < ${filename}
+ 
